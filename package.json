@@ -1,6 +1,6 @@
 {
   "name": "@appveen/swagger-mongoose-crud",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Swagger Mongoose crud wrapper",
   "main": "index.js",
   "scripts": {
