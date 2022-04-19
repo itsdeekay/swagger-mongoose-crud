@@ -386,8 +386,8 @@ CrudController.prototype = {
         };
         reqParams['sort'] ? reqParams.sort.split(',').map(el => el.split('-').length > 1 ? sort[el.split('-')[1]] = -1 : sort[el.split('-')[0]] = 1) : null;
         var select = reqParams['select'] ? reqParams.select.split(',') : [];
-        var page = reqParams['page'] ? reqParams.page : 1;
-        var count = reqParams['count'] ? reqParams.count : 10;
+        var page = reqParams['page'] ? +reqParams.page : 1;
+        var count = reqParams['count'] ? +reqParams.count : 10;
         var search = reqParams['search'] ? reqParams.search : null;
         var metadata = req.query['metadata'] ? req.query.metadata.toLowerCase() == 'true' : false;
         var skip = count * (page - 1);
