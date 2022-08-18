@@ -62,22 +62,24 @@ MongooseModel.prototype = {
 function MakeSchema(definition) {
     if (definition) {
         const temp = {
-            lastUpdated: {
-                type: 'Date',
-                default: Date.now
-            },
-            createdAt: {
-                type: 'Date',
-                default: Date.now
-            },
-            deleted: {
-                type: 'Boolean',
-                default: false
-            },
-            version: {
-                document: {
-                    type: 'Number',
-                    default: 0
+            type: {
+                lastUpdated: {
+                    type: 'Date',
+                    default: Date.now
+                },
+                createdAt: {
+                    type: 'Date',
+                    default: Date.now
+                },
+                deleted: {
+                    type: 'Boolean',
+                    default: false
+                },
+                version: {
+                    document: {
+                        type: 'Number',
+                        default: 0
+                    }
                 }
             }
         };
