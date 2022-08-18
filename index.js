@@ -123,9 +123,9 @@ function injectDefaults(schema) {
         if (this._metadata) {
             if (this._metadata.version) this._metadata.version.document++;
             this._metadata.lastUpdated = new Date();
-            if (this.isNew) {
-                this._metadata.createdAt = new Date();
-            }
+            // if (this.isNew) {
+            //     this._metadata.createdAt = new Date();
+            // }
         }
         next();
     });
@@ -133,9 +133,9 @@ function injectDefaults(schema) {
         if (this._metadata) {
             if (this._metadata.version) this._metadata.version.document++;
             this._metadata.lastUpdated = new Date();
-            if (this.isNew) {
-                this._metadata.createdAt = new Date();
-            }
+            // if (this.isNew) {
+            //     this._metadata.createdAt = new Date();
+            // }
         }
         next();
     });
