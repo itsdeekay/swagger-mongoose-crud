@@ -4,9 +4,9 @@ const _ = require('lodash');
 const log4js = require('log4js');
 
 const ParamController = require('./param.controller');
-const logger = process.env.PROD_ENV ? log4js.getLogger('swagger-mongoose-crud') : log4js.getLogger('swagger-mongoose-crud-dev');
-const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'info';
 const params = require('./swagger.params.map');
+let logger = process.env.PROD_ENV ? log4js.getLogger('swagger-mongoose-crud') : log4js.getLogger('swagger-mongoose-crud-dev');
+let logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'info';
 
 log4js.configure({
     levels: {
