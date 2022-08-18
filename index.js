@@ -1,11 +1,13 @@
 'use strict';
-var mongoose = require('mongoose');
-var ParamController = require('./param.controller');
-var _ = require('lodash');
-var log4js = require('log4js');
-var logger = process.env.PROD_ENV ? log4js.getLogger('swagger-mongoose-crud') : log4js.getLogger('swagger-mongoose-crud-dev');
-var logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'info';
-var params = require('./swagger.params.map');
+const mongoose = require('mongoose');
+const _ = require('lodash');
+const log4js = require('log4js');
+
+const ParamController = require('./param.controller');
+const logger = process.env.PROD_ENV ? log4js.getLogger('swagger-mongoose-crud') : log4js.getLogger('swagger-mongoose-crud-dev');
+const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'info';
+const params = require('./swagger.params.map');
+
 log4js.configure({
     levels: {
         AUDIT: { value: Number.MAX_VALUE - 1, colour: 'yellow' }
@@ -57,27 +59,55 @@ MongooseModel.prototype = {
     swagMapper: params.map
 };
 
+function MakeSchema(definition) {
+    if (definition) {
+        const temp = {
+            lastUpdated: {
+                type: 'Date',
+                default: Date.now
+            },
+            createdAt: {
+                type: 'Date',
+                default: Date.now
+            },
+            deleted: {
+                type: 'Boolean',
+                default: false
+            },
+            version: {
+                document: {
+                    type: 'Number',
+                    default: 0
+                }
+            }
+        };
+        if (!definition._metadata) {
+            definition._metadata = {};
+        }
+        definition._metadata = _.merge(temp, definition._metadata);
+        return new mongoose.Schema(definition);
+    }
+}
 
 function injectDefaults(schema) {
-    schema.add({
-        '_metadata.lastUpdated': {
-            type: Date,
-            default: Date.now
-        },
-        '_metadata.createdAt': {
-            type: Date,
-            default: Date.now
-        },
-        '_metadata.deleted': {
-            type: Boolean,
-            default: false
-        },
-        '_metadata.version.document': {
-            type: 'Number',
-            default: 0
-        }
-
-    })
+    // schema.add({
+    //     '_metadata.lastUpdated': {
+    //         type: Date,
+    //         default: Date.now
+    //     },
+    //     '_metadata.createdAt': {
+    //         type: Date,
+    //         default: Date.now
+    //     },
+    //     '_metadata.deleted': {
+    //         type: Boolean,
+    //         default: false
+    //     },
+    //     '_metadata.version.document': {
+    //         type: 'Number',
+    //         default: 0
+    //     }
+    // })
     schema.index({
         '_metadata.lastUpdated': 1
     });
@@ -88,16 +118,29 @@ function injectDefaults(schema) {
         '_metadata.deleted': 1
     });
     schema.pre('save', function (next) {
-        if (this._metadata && this._metadata.version) this._metadata.version.document++;
-        if (this._metadata) this._metadata.lastUpdated = new Date();
+        if (this._metadata) {
+            if (this._metadata.version) this._metadata.version.document++;
+            this._metadata.lastUpdated = new Date();
+            if (this.isNew) {
+                this._metadata.createdAt = new Date();
+            }
+        }
         next();
     });
     schema.pre('update', function (next) {
-        if (this._metadata && this._metadata.version) this._metadata.version.document++;
-        if (this._metadata) this._metadata.lastUpdated = new Date();
+        if (this._metadata) {
+            if (this._metadata.version) this._metadata.version.document++;
+            this._metadata.lastUpdated = new Date();
+            if (this.isNew) {
+                this._metadata.createdAt = new Date();
+            }
+        }
         next();
     });
     return schema;
 }
 MongooseModel.prototype = _.create(ParamController.prototype, MongooseModel.prototype);
-exports = module.exports = MongooseModel.bind(MongooseModel);
+exports = module.exports = {
+    SMCrud: MongooseModel.bind(MongooseModel),
+    MakeSchema: MakeSchema
+};
