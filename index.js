@@ -76,11 +76,23 @@ function MakeSchema(definition) {
                     default: false
                 },
                 version: {
-                    document: {
-                        type: 'Number',
-                        default: 0
+                    type: {
+                        document: {
+                            type: 'Number',
+                            default: 0
+                        }
                     }
                 }
+            },
+            default: () => {
+                return {
+                    createdAt: Date.now(),
+                    lastUpdated: Date.now(),
+                    deleted: false,
+                    version: {
+                        document: 0
+                    }
+                };
             }
         };
         if (!definition._metadata) {
