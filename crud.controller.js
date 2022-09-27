@@ -743,7 +743,7 @@ CrudController.prototype = {
                         resolve({ status: 200, data: updated });
                     });
                 }
-            }).exec();
+            });
         });
     },
     _bulkUpdate: function (req, res) {
